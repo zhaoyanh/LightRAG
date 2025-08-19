@@ -145,7 +145,7 @@ async def ollama_embed(texts: list[str], embed_model, **kwargs) -> np.ndarray:
     if api_key:
         headers["Authorization"] = f"Bearer {api_key}"
 
-    host = kwargs.pop("host", None)
+    host = kwargs.pop("host", "http://10.100.4.15:8080/api/embed")
     timeout = kwargs.pop("timeout", None)
 
     ollama_client = ollama.AsyncClient(host=host, timeout=timeout, headers=headers)

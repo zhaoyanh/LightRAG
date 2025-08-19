@@ -38,12 +38,13 @@ async def llm_model_func(
     prompt, system_prompt=None, history_messages=[], **kwargs
 ) -> str:
     return await openai_complete_if_cache(
-        "gpt-4o-mini",
+        #"gpt-4o-mini",
+        "qwen3:latest",
         prompt,
         system_prompt=system_prompt,
         history_messages=history_messages,
         api_key="your_llm_api_key_here",
-        base_url="https://api.your-llm-provider.com/v1",
+        base_url="http://10.100.4.15:8080/v1/chat",
         **kwargs,
     )
 
@@ -51,9 +52,10 @@ async def llm_model_func(
 async def embedding_func(texts: list[str]) -> np.ndarray:
     return await openai_embed(
         texts,
-        model="text-embedding-3-large",
+        model="bge-m3",
+        #"text-embedding-3-large",
         api_key="your_embedding_api_key_here",
-        base_url="https://api.your-embedding-provider.com/v1",
+        base_url="http://10.100.4.15:8080/api/embed",
     )
 
 
@@ -62,8 +64,8 @@ async def my_rerank_func(query: str, documents: list, top_n: int = None, **kwarg
     return await custom_rerank(
         query=query,
         documents=documents,
-        model="BAAI/bge-reranker-v2-m3",
-        base_url="https://api.your-rerank-provider.com/v1/rerank",
+        model="dengcao/Qwen3-Reranker-8B:F16",
+        base_url="http://10.100.4.15:8080/v1/completions",
         api_key="your_rerank_api_key_here",
         top_n=top_n or 10,
         **kwargs,
@@ -109,8 +111,8 @@ async def create_rag_with_rerank_model():
     rerank_model = RerankModel(
         rerank_func=custom_rerank,
         kwargs={
-            "model": "BAAI/bge-reranker-v2-m3",
-            "base_url": "https://api.your-rerank-provider.com/v1/rerank",
+            "model": "dengcao/Qwen3-Reranker-8B:F16",
+            "base_url": "http://10.100.4.15:8080/v1/completions",
             "api_key": "your_rerank_api_key_here",
         },
     )
@@ -214,8 +216,8 @@ async def test_direct_rerank():
         reranked_docs = await custom_rerank(
             query=query,
             documents=documents,
-            model="BAAI/bge-reranker-v2-m3",
-            base_url="https://api.your-rerank-provider.com/v1/rerank",
+            model="dengcao/Qwen3-Reranker-8B:F16",
+            base_url="http://10.100.4.15:8080/v1/completions",
             api_key="your_rerank_api_key_here",
             top_n=3,
         )
